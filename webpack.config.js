@@ -1,17 +1,22 @@
-let path = require('path');
-let webpack = require('webpack');
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+
+const PATHS = {
+  app: path.join(__dirname, 'src'),
+  build: path.join(__dirname, 'dist'),
+};
 
 module.exports = {
-    devServer: {
-        publicPath: '/dist/',
-        hot: true
+    entry: {
+        app: PATHS.app + '/index.js',
     },
-        //这里还可以加入其它你需要的参数
-    entry: ["./src/index.js"],
     output: {
-        path: path.join( __dirname, '/dist'),
-        publicPath: '/dist/',
-        filename: "bundle.js"
+        path: PATHS.build,
+        filename: '[name].js',
+    },
+    devServer:{
+        hot: true,
     },
     module: {
         loaders: [
@@ -23,14 +28,13 @@ module.exports = {
                 test: /\.less$/,
                 loader: "style-loader!css!less"
             },
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                loader: "babel-loader"
-            }
         ]
     },
     plugins: [
-        new webpack.HotModuleReplacementPlugin()
-    ]
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NamedModulesPlugin(),
+        new HtmlWebpackPlugin({
+        title: 'Webpack demo',
+        }),
+    ],
 };
